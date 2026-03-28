@@ -35,9 +35,6 @@ public class DatabaseIngestionService {
         List<IngestedDocument> docs = new ArrayList<>();
 
         for (Map<String, Object> row : rows) {
-            log.info("----- FAQ -----");
-            log.info("Q: {}", row.get("question"));
-            log.info("A: {}", row.get("answer"));
             String content = "Question: " + row.get("question") + "\n" + "Answer: " + row.get("answer") + "\n";
 
             docs.add(new IngestedDocument(
@@ -62,10 +59,6 @@ public class DatabaseIngestionService {
         List<IngestedDocument> docs = new ArrayList<>();
 
         for (Map<String, Object> row : rows) {
-            log.info("----- Release Note -----");
-            log.info("Version: {}", row.get("version"));
-            log.info("Description: {}", row.get("summary"));
-
             String content = "Version: " + row.get("version") + "\n" +
                     "Summary: " + row.get("summary") + "\n" +
                     "Details: " + row.get("details") + "\n";
@@ -93,9 +86,6 @@ public class DatabaseIngestionService {
         List<IngestedDocument> docs = new ArrayList<>();
 
         for (Map<String, Object> row : rows) {
-            log.info("----- Announcement -----");
-            log.info("Title: {}", row.get("subject"));
-
             String content = "Subject: " + row.get("subject") + "\n" + "Body: " + row.get("body") + "\n";
 
             docs.add(new IngestedDocument(

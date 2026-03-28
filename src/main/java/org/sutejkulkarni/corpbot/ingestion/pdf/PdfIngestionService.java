@@ -31,16 +31,9 @@ public class PdfIngestionService {
     }
 
     private IngestedDocument ingestSinglePdf(File pdfFile) throws IOException {
-        log.info("Ingesting PDF: {}", pdfFile.getName());
-
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFTextStripper stripper = new PDFTextStripper();
-
             String text = stripper.getText(document);
-
-            log.info("------- Extracted Text ({}) --------", pdfFile.getName());
-            log.info(text);
-
             return new IngestedDocument("pdf", text, Map.of("fileName", pdfFile.getName()));
         }
     }

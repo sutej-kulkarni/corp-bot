@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-class IngestionOrchestrator {
+public class IngestionOrchestrator {
     public final PdfIngestionService pdfIngestionService;
     public final WikiIngestionService wikiIngestionService;
     public final DatabaseIngestionService databaseIngestionService;

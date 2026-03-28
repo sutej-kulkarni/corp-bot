@@ -30,13 +30,7 @@ public class WikiIngestionService {
     }
 
     private IngestedDocument ingestSingleFile(File markdownFile) throws IOException {
-        log.info("-------- Extracting({}) ---------", markdownFile.getName());
-
         String content = Files.readString(markdownFile.toPath());
-
-        log.info("-------- Wiki Content ({}) ---------", markdownFile.getName());
-        log.info(content);
-
         return new IngestedDocument("wiki", content, Map.of("fileName", markdownFile.getName()));
     }
 }

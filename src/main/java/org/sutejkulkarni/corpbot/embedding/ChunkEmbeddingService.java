@@ -10,7 +10,7 @@ import org.sutejkulkarni.corpbot.embedding.model.EmbeddedChunk;
 public class ChunkEmbeddingService {
     private final EmbeddingModel embeddingModel;
 
-    public ChunkEmbeddingService(@Qualifier("ollamaEmbeddingModel") EmbeddingModel embeddingModel) {
+    public ChunkEmbeddingService(EmbeddingModel embeddingModel) {
         this.embeddingModel = embeddingModel;
     }
 

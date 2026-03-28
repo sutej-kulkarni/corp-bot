@@ -30,7 +30,7 @@ public class RetrievalService {
 
         SearchRequest searchRequest = SearchRequest.builder()
                 .query(query)
-                .topK(5)
+                .topK(10)
                 .build();
 
         List<Document> docs = vectorStore.similaritySearch(searchRequest);

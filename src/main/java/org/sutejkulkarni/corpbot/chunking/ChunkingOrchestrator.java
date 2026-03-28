@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-class ChunkingOrchestrator {
+public class ChunkingOrchestrator {
     private final WikiSemanticChunker wikiSemanticChunker;
     private final PdfPragmaticChunker pdfPragmaticChunker;
     private final DatabaseChunker databaseChunker;

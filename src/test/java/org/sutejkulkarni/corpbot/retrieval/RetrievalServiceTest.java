@@ -18,7 +18,7 @@ class RetrievalServiceTest {
 
     @Test
     void testRetrievalService() {
-        RetrievalResult result = retrievalService.retrieve("What is the leave carry forward service?");
+        RetrievalResult result = retrievalService.retrieve("What is the work from home policy?");
 
         log.info("Retrieval result - chunks found: {}" , result.getChunks().size());
         for(Chunk chunk : result.getChunks()) {

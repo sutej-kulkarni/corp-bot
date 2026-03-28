@@ -9,10 +9,9 @@ import org.springframework.stereotype.Service;
 import org.sutejkulkarni.corpbot.chunking.model.Chunk;
 import org.sutejkulkarni.corpbot.retrieval.model.RetrievalResult;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +19,7 @@ import java.util.stream.Collectors;
 public class RetrievalService {
 
     private final VectorStore vectorStore;
+    private final ChunkRankingComparator rankingComparator = new ChunkRankingComparator();
 
     public RetrievalService(@Qualifier("customVectorStore") VectorStore vectorStore) {
         this.vectorStore = vectorStore;
@@ -38,10 +38,47 @@ public class RetrievalService {
         log.info("Vector store returned {} documents", docs.size());
 
         List<Chunk> chunks = docs.stream()
+                .filter(this::isAllowedByMetadata)
                 .map(this::toChunk)
+                .sorted(rankingComparator)
                 .collect(Collectors.toList());
 
         return new RetrievalResult(chunks);
+    }
+
+    private boolean isAllowedByMetadata(Document document) {
+        Map<String, Object> metadata = document.getMetadata();
+        String source = metadata.get("source").toString();
+
+        if (!"DB".equals(source)) {
+            return true;
+        }
+        String table = metadata.get("table").toString();
+        return switch(table) {
+            case "announcements" -> isActiveAnnouncement(metadata);
+            case "faqs" -> isPublicFaq(metadata);
+            case "release_notes" -> true;
+            default -> true;
+        };
+    }
+
+    private boolean isPublicFaq(Map<String, Object> metadata) {
+        return !"RESTRICTED".equals(
+                metadata.get("visibility").toString()
+        );
+    }
+
+    private boolean isActiveAnnouncement(Map<String, Object> metadata) {
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH);
+
+        String fromDate = metadata.get("effectiveFrom").toString();
+        String tillDate = metadata.get("effectiveTo").toString();
+
+        LocalDate from = LocalDate.parse(fromDate, formatter);
+        LocalDate to = !tillDate.isEmpty() ? LocalDate.parse(tillDate, formatter) : today.plusDays(1);
+
+        return !today.isBefore(from) && !today.isAfter(to);
     }
 
     private Chunk toChunk(Document document) {

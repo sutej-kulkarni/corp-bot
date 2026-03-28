@@ -12,7 +12,7 @@ import org.sutejkulkarni.corpbot.ingestion.model.IngestedDocument;
 import java.util.List;
 
 @SpringBootTest
-class DatabaseChunckerTest {
+class ChunkingOrchestratorTest {
 
     public static final Logger log = LoggerFactory.getLogger(DatabaseChunckerTest.class);
 
@@ -20,27 +20,23 @@ class DatabaseChunckerTest {
     private IngestionOrchestrator ingestionOrchestrator;
 
     @Autowired
-    private DatabaseChunker databaseChunker;
+    private ChunkingOrchestrator chunkingOrchestrator;
 
     @Test
-    void database_chunker() throws Exception {
+    void testAllChunks() throws Exception {
         List<IngestedDocument> documents = ingestionOrchestrator.ingestAll();
+        for (IngestedDocument document : documents) {
+            List<Chunk> chunks = chunkingOrchestrator.chunk(document);
 
-        List<IngestedDocument> dbDocuments = documents.stream()
-                .filter(doc -> doc.getSource().equals("db"))
-                .toList();
+            log.info("====================================");
+            log.info("SOURCE : {}", document.getSource());
+            log.info("CHUNKS : {}", chunks.size());
 
-        for (IngestedDocument doc: dbDocuments) {
-            List<Chunk> chunks = databaseChunker.chunk(doc);
-            Chunk chunk = chunks.get(0);
-
-            log.info("==== DB CHUNK ====");
-            log.info("Source      : {}", chunk.getSource());
-            log.info("Chunk Index : {}", chunk.getChunkIndex());
-            log.info("Metadata    : {}", chunk.getMetadata());
-            log.info("Content     : {}", chunk.getContent());
+            for (Chunk chunk : chunks) {
+                log.info("Chunk index : {}", chunk.getChunkIndex());
+                log.info("Metadata    : {}", chunk.getMetadata());
+                log.info("Content     : {}", chunk.getContent());
+            }
         }
-
-
     }
 }

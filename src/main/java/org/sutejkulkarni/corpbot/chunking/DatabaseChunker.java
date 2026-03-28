@@ -8,7 +8,7 @@ import java.util.List;
 
 @Component
 class DatabaseChunker {
-    public List<Chunk> chunks(IngestedDocument document) {
+    public List<Chunk> chunk(IngestedDocument document) {
         return List.of(
                 new Chunk(
                         document.getSource(),

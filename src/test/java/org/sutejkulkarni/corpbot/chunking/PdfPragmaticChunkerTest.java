@@ -31,7 +31,7 @@ class PdfPragmaticChunkerTest {
                 .findFirst()
                 .orElseThrow();
 
-        List<Chunk> chunks = pdfPragmaticChunker.chunks(document);
+        List<Chunk> chunks = pdfPragmaticChunker.chunk(document);
 
         log.info("Source: {}", document.getSource());
         log.info("Total chunks: {}", chunks.size());

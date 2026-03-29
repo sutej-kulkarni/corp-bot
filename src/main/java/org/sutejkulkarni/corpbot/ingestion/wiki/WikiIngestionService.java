@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,12 @@ import java.util.Map;
 public class WikiIngestionService {
     public static final Logger log = LoggerFactory.getLogger(WikiIngestionService.class);
     public static final String WIKI_DIRECTORY = "data/wiki";
+
+    public List<IngestedDocument> ingest(String fileName) throws Exception {
+        File wikiFile = new File(WIKI_DIRECTORY + "/" + fileName);
+        IngestedDocument doc = ingestSingleFile(wikiFile);
+        return Collections.singletonList(doc);
+    }
 
     public List<IngestedDocument> ingestWikiFiles() throws Exception {
         File[] markdownFiles = new File(WIKI_DIRECTORY).listFiles();
@@ -31,6 +38,9 @@ public class WikiIngestionService {
 
     private IngestedDocument ingestSingleFile(File markdownFile) throws IOException {
         String content = Files.readString(markdownFile.toPath());
-        return new IngestedDocument("wiki", content, Map.of("fileName", markdownFile.getName()));
+        return new IngestedDocument("wiki", content, Map.of(
+                "fileName", markdownFile.getName(),
+                "identity", "WIKI#"+markdownFile.getName()
+        ));
     }
 }

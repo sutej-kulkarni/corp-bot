@@ -9,14 +9,18 @@ import org.sutejkulkarni.corpbot.ingestion.model.IngestedDocument;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PdfIngestionService {
     public static final Logger log = LoggerFactory.getLogger(PdfIngestionService.class);
     public static final String PDF_DIRECTORY = "data/pdfs";
+
+    public List<IngestedDocument> ingest(String fileName) throws Exception {
+        File pdfFile = new File(PDF_DIRECTORY + "/" + fileName);
+        IngestedDocument doc = ingestSinglePdf(pdfFile);
+        return Collections.singletonList(doc);
+    }
 
     public List<IngestedDocument> ingestPdfs() throws Exception {
         File[] pdfFiles = new File(PDF_DIRECTORY).listFiles();
@@ -34,7 +38,10 @@ public class PdfIngestionService {
         try (PDDocument document = PDDocument.load(pdfFile)) {
             PDFTextStripper stripper = new PDFTextStripper();
             String text = stripper.getText(document);
-            return new IngestedDocument("pdf", text, Map.of("fileName", pdfFile.getName()));
+            return new IngestedDocument("pdf", text, Map.of(
+                    "fileName", pdfFile.getName(),
+                    "identity", "PDF#"+pdfFile.getName()
+            ));
         }
     }
 }
